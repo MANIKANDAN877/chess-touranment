@@ -2,7 +2,21 @@ import { DatabaseSync } from 'node:sqlite';
 import { existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
-const DB_PATH = process.env.CHESS_DB_PATH || 'data/chess.db';
+import { copyFileSync } from 'node:fs';
+
+let DB_PATH = process.env.CHESS_DB_PATH || 'data/chess.db';
+
+if (process.env.NETLIFY === 'true') {
+	const tempDbPath = '/tmp/chess.db';
+	if (!existsSync(tempDbPath) && existsSync('data/chess.db')) {
+		try {
+			copyFileSync('data/chess.db', tempDbPath);
+		} catch (e) {
+			console.error('Failed to copy database to /tmp:', e);
+		}
+	}
+	DB_PATH = tempDbPath;
+}
 
 const dir = dirname(DB_PATH);
 if (dir && dir !== '.' && !existsSync(dir)) {
