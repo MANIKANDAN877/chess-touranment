@@ -6,7 +6,9 @@ import { copyFileSync } from 'node:fs';
 
 let DB_PATH = process.env.CHESS_DB_PATH || 'data/chess.db';
 
-if (process.env.NETLIFY === 'true') {
+const isServerless = !!(process.env.NETLIFY || process.env.LAMBDA_TASK_ROOT || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+if (isServerless) {
 	const tempDbPath = '/tmp/chess.db';
 	if (!existsSync(tempDbPath) && existsSync('data/chess.db')) {
 		try {

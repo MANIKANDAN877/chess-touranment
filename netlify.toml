@@ -2,4 +2,5 @@
   NODE_VERSION = "22"
 
 [functions]
+  node_version = "22"
   included_files = ["data/chess.db"]
